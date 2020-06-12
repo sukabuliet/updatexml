@@ -8,6 +8,7 @@ updataxml注入小工具
 
 #### 使用方法
 - 总体操作方法和sqlmap一样
+- data结果会自动输出到以hostname命令的文件夹里面
 1. 参数
 ```
 usage: updatexml_sql.py [-h] [-u URL] [-r FILE] [-p PARAMETER] [-s PROTOCOL]
