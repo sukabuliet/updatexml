@@ -220,7 +220,7 @@ class udpatexml_get():
                     print("SQL ERROR!")
                     break
                 print("进度:{0}%".format(round((i + 1) * 100 / int(count_table))), end="\r")
-        print(tables)    
+        print(tables)
         return tables
 
     def get_columns(self, tablename):
@@ -257,9 +257,6 @@ class udpatexml_get():
                     print("SQL ERROR!")
                     break
                 print("进度:{0}%".format(round((i + 1) * 100 / int(count_col))), end="\r")
-                fo = open('{}.txt'.format(tablename),'a')
-                fo.write(columns_get + ',')
-                fo.close()
         print(','.join(columns))
         return columns
 
@@ -352,6 +349,7 @@ if __name__ == "__main__":
     parser.add_argument('-T', '--table', help='Which Table need get data')
     parser.add_argument('-C', '--column', help='Which columns need get data')
     args = parser.parse_args()
+    print(args)
     if args.parameter:
         if args.url:
             method, url, header, para = get_header(args.url)
