@@ -16,7 +16,7 @@ import os
 from urllib.parse import urlparse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-proxies = {'http': 'http://120.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
+# proxies = {'http': 'http://120.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
 
 
 def get_header(url):
@@ -152,7 +152,7 @@ class udpatexml_get():
             get_para = self.sql_para(sql_select)
             urls_cut = urlparse(self.url)
             urls = urls_cut.scheme + '://' + urls_cut.netloc + urls_cut.path + '?' + get_para
-            res = requests.get(url=urls, headers=self.headers, verify=False,proxies=proxies)
+            res = requests.get(url=urls, headers=self.headers, verify=False)
             res.encoding = 'utf-8'
         req_res = res.text
         return req_res
